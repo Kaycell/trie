@@ -2,8 +2,8 @@ package trie
 
 type node struct {
 	content    rune
-	children   []*node
 	wordMarker bool
+	children   []*node
 }
 
 func (n *node) findChild(r rune) *node {
@@ -15,6 +15,8 @@ func (n *node) findChild(r rune) *node {
 	return nil
 }
 
+// Trie represents a trie also called prefix tree.
+// The zero value for Trie is an empty trie ready to use.
 type Trie struct {
 	root   node
 	nbNode int
@@ -32,6 +34,10 @@ func (t *Trie) Init() *Trie {
 // New returns an initialized trie.
 func New() *Trie { return new(Trie).Init() }
 
+// AddWord adds word in t.
+// Word is stored one rune per node in t.
+// If the root of the word is already present only missing runes are added.
+// wordmarker is set to true on the node that contains last word rune.
 func (t *Trie) AddWord(word string) {
 	currentNode := &t.root
 
@@ -57,6 +63,8 @@ func (t *Trie) AddWord(word string) {
 	}
 }
 
+// SearchWord searches a path in t that contains every word runes and
+// end by wordmarked node.
 func (t *Trie) SearchWord(word string) bool {
 	currentNode := &t.root
 
@@ -67,8 +75,5 @@ func (t *Trie) SearchWord(word string) bool {
 		}
 		currentNode = child
 	}
-	if currentNode.wordMarker {
-		return true
-	}
-	return false
+	return currentNode.wordMarker
 }
