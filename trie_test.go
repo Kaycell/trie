@@ -2,6 +2,16 @@ package trie
 
 import "testing"
 
+func TestCreateTrie(t *testing.T) {
+	tNew := New()
+	if (tNew.root.content != 0) ||
+		(tNew.root.children != nil) ||
+		(tNew.root.wordMarker != false) ||
+		(tNew.nbNode != 0) {
+		t.Error("Expected", Trie{}, "got", *tNew)
+	}
+}
+
 func TestAddEmptyWord(t *testing.T) {
 	var trie Trie
 
