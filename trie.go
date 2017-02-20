@@ -1,5 +1,7 @@
 package trie
 
+import "strings"
+
 type node struct {
 	content    rune
 	wordMarker bool
@@ -76,4 +78,39 @@ func (t *Trie) SearchWord(word string) bool {
 		currentNode = child
 	}
 	return currentNode.wordMarker
+}
+
+// findAllWords use DFS algorithm to find all words from node n
+func findAllWords(n *node, prefix string, words []string) []string {
+	if n.wordMarker {
+		words = append(words, prefix)
+	}
+	for _, child := range n.children {
+		prefix = prefix + string(child.content)
+		words = findAllWords(child, prefix, words)
+		prefix = strings.TrimSuffix(prefix, string(child.content))
+	}
+	return words
+}
+
+// FindAllWords returns all words present in the trie
+func (t *Trie) FindAllWords() []string {
+	var words []string
+	return findAllWords(&t.root, "", words)
+}
+
+// FindAllMatchingWords returns all words present in the trie that
+// match the prefix
+func (t *Trie) FindAllMatchingWords(prefix string) []string {
+	var matchs []string
+	currentNode := &t.root
+	for _, c := range prefix {
+		child := currentNode.findChild(c)
+		if child == nil {
+			return matchs
+		}
+		currentNode = child
+	}
+	matchs = findAllWords(currentNode, prefix, matchs)
+	return matchs
 }
